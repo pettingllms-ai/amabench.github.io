@@ -83,9 +83,22 @@ const Results = () => {
         <p className="font-mono text-sm text-accent-blue mb-2 tracking-wider">
           04 — RESULTS
         </p>
-        <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-10">
+        <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-4">
           Main Results
         </h2>
+        <div className="mb-10 rounded-lg border border-accent-blue/30 bg-accent-blue-light px-4 py-3 text-sm text-foreground/80">
+          <strong className="text-accent-blue">Note:</strong> Results shown here are from the paper using{" "}
+          <strong>open-ended QA evaluation</strong> (LLM-as-judge). This differs from our{" "}
+          <a
+            href="https://huggingface.co/datasets/Pettingllms/AMA-bench"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="underline text-accent-blue hover:text-accent-blue/80"
+          >
+            Hugging Face leaderboard
+          </a>
+          , which uses a different evaluation protocol.
+        </div>
 
         {/* Hero stats */}
         <div

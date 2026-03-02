@@ -31,7 +31,7 @@ const HeroBanner = () => {
           for Agentic Applications
         </h1>
 
-        <p className="text-base text-muted-foreground max-w-2xl mx-auto mb-4 leading-relaxed">
+        <p className="text-xl md:text-2xl lg:text-3xl text-foreground/70 max-w-2xl mx-auto mb-6 leading-relaxed italic">
           Evaluate agent memory itself, not just dialogue.
         </p>
 

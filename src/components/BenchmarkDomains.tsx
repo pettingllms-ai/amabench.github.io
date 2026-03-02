@@ -10,7 +10,7 @@ import catWebarena from "@/assets/cat-webarena.jpg";
 import catSwebench from "@/assets/cat-swebench.jpg";
 import catGaia from "@/assets/cat-gaia.jpg";
 import catSpider from "@/assets/cat-spider.jpg";
-import datasetDistImg from "@/assets/figures/dataset_distribution.png";
+import datasetDistImg from "@/assets/figures/domain_distribution.png";
 
 const imageMap: Record<string, string> = {
   "cat-spider": catSpider,
