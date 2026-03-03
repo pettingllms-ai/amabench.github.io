@@ -87,8 +87,17 @@ const Results = () => {
           Main Results
         </h2>
         <div className="mb-10 rounded-lg border border-accent-blue/30 bg-accent-blue-light px-4 py-3 text-sm text-foreground/80">
-          <strong className="text-accent-blue">Note:</strong> Results shown here are from the paper using{" "}
-          <strong>open-ended QA evaluation</strong> (LLM-as-judge). This differs from our{" "}
+          <strong className="text-accent-blue">Note:</strong> All results use <strong>Qwen3-32B</strong> as the base model. The <strong>dashed line</strong> represents the Long Context baseline (full context retrieval). Results shown here are from the paper using{" "}
+          <strong>open-ended QA evaluation</strong> (LLM-as-judge). For complete experimental configurations, see the{" "}
+          <a
+            href="https://arxiv.org/abs/2602.22769"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="underline text-accent-blue hover:text-accent-blue/80"
+          >
+            paper
+          </a>
+          . For complete results, visit our{" "}
           <a
             href="https://huggingface.co/datasets/Pettingllms/AMA-bench"
             target="_blank"
@@ -97,7 +106,7 @@ const Results = () => {
           >
             Hugging Face leaderboard
           </a>
-          , which uses a different evaluation protocol.
+          .
         </div>
 
         {/* Hero stats */}
@@ -176,14 +185,9 @@ const Results = () => {
                 />
                 <ReferenceLine
                   x={fullContextBaseline}
-                  stroke="hsl(0, 0%, 60%)"
+                  stroke="hsl(0, 0%, 55%)"
                   strokeDasharray="6 4"
-                  label={{
-                    value: "Qwen3-32B Full Context",
-                    position: "top",
-                    fontSize: 11,
-                    fill: "hsl(0, 0%, 50%)",
-                  }}
+                  strokeWidth={1.5}
                 />
                 <Tooltip content={<CustomTooltip />} cursor={{ fill: "hsl(30, 10%, 95%)" }} />
                 <Bar dataKey="avg" radius={[0, 4, 4, 0]} barSize={20}>
@@ -193,6 +197,14 @@ const Results = () => {
                 </Bar>
               </BarChart>
             </ResponsiveContainer>
+          </div>
+
+          {/* Chart legend */}
+          <div className="flex items-center gap-2 mt-3 ml-[100px] text-xs text-muted-foreground">
+            <svg width="28" height="12" className="shrink-0">
+              <line x1="0" y1="6" x2="28" y2="6" stroke="hsl(0, 0%, 55%)" strokeWidth="1.5" strokeDasharray="6 4" />
+            </svg>
+            <span>Long Context Baseline (Qwen3-32B full context): <strong className="text-foreground">{(fullContextBaseline * 100).toFixed(1)}%</strong></span>
           </div>
         </div>
 

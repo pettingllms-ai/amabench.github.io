@@ -49,25 +49,25 @@ const BenchmarkDomains = () => {
             className="w-full max-w-sm rounded-lg"
           />
           <div className="flex flex-row md:flex-col gap-8">
-            <div className="text-center md:text-left">
+            <div className="flex items-center gap-3 md:text-left">
               <p className="font-mono text-4xl font-bold text-accent-blue">
                 {Math.round(samples)}
               </p>
-              <p className="text-sm text-muted-foreground">Samples</p>
+              <p className="text-sm font-semibold text-foreground">Samples</p>
             </div>
-            <div className="text-center md:text-left">
+            <div className="flex items-center gap-3 md:text-left">
               <p className="font-mono text-4xl font-bold text-accent-blue">
                 {Math.round(qaPairs).toLocaleString()}
               </p>
-              <p className="text-sm text-muted-foreground">QA Pairs</p>
+              <p className="text-sm font-semibold text-foreground">QA Pairs</p>
             </div>
-            <div className="text-center md:text-left">
+            <div className="flex items-center gap-3 md:text-left">
               <p className="font-mono text-4xl font-bold text-accent-blue">6</p>
-              <p className="text-sm text-muted-foreground">Domains</p>
+              <p className="text-sm font-semibold text-foreground">Domains</p>
             </div>
-            <div className="text-center md:text-left">
+            <div className="flex items-center gap-3 md:text-left">
               <p className="font-mono text-4xl font-bold text-accent-blue">4</p>
-              <p className="text-sm text-muted-foreground">Capabilities</p>
+              <p className="text-sm font-semibold text-foreground">Capabilities</p>
             </div>
           </div>
         </div>
