@@ -53,6 +53,55 @@ const typeColors: Record<string, string> = {
   D: "bg-emerald-100 text-emerald-700 border-emerald-200",
 };
 
+const MAX_CHARS = 4096;
+const KEEP_CHARS = 2048;
+
+function TruncatedText({ text }: { text: string }) {
+  const [expanded, setExpanded] = useState(false);
+
+  if (text.length <= MAX_CHARS || expanded) {
+    return (
+      <span>
+        {text}
+        {expanded && text.length > MAX_CHARS && (
+          <button
+            onClick={(e) => { e.stopPropagation(); setExpanded(false); }}
+            className="ml-1 text-accent-blue hover:underline"
+          >
+            [collapse]
+          </button>
+        )}
+      </span>
+    );
+  }
+
+  const head = text.slice(0, KEEP_CHARS);
+  const tail = text.slice(text.length - KEEP_CHARS);
+  const hiddenCount = text.length - KEEP_CHARS * 2;
+
+  return (
+    <span>
+      {head}
+      <button
+        onClick={(e) => { e.stopPropagation(); setExpanded(true); }}
+        className="mx-1 inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-accent-blue/10 text-accent-blue hover:bg-accent-blue/20 transition-colors text-[10px] font-sans font-medium"
+      >
+        ... {hiddenCount.toLocaleString()} chars hidden — click to expand ...
+      </button>
+      {tail}
+    </span>
+  );
+}
+
+// Parse "tool_name: {json...}" into { tool, detail }
+function parseAction(action: string): { tool: string; detail: string } {
+  const colonIdx = action.indexOf(": ");
+  if (colonIdx > 0 && colonIdx < 40) {
+    return { tool: action.slice(0, colonIdx), detail: action.slice(colonIdx + 2) };
+  }
+  return { tool: action, detail: "" };
+}
+
 const TrajectoryModal = ({ example, open, onOpenChange }: TrajectoryModalProps) => {
   const [expandedQA, setExpandedQA] = useState<number | null>(null);
 
@@ -84,7 +133,8 @@ const TrajectoryModal = ({ example, open, onOpenChange }: TrajectoryModalProps) 
               </Badge>
             </DialogTitle>
             <DialogDescription className="text-left">
-              <span className="font-medium text-foreground">Task:</span> {example.task}
+              <span className="font-medium text-foreground">Task:</span>{" "}
+              {example.task.length > 200 ? example.task.slice(0, 200) + "..." : example.task}
               <span className="ml-4 font-mono text-xs text-muted-foreground">
                 {example.num_turns} turns &middot; {example.total_tokens.toLocaleString()} tokens
               </span>
@@ -105,21 +155,31 @@ const TrajectoryModal = ({ example, open, onOpenChange }: TrajectoryModalProps) 
               </h3>
             </div>
             <div className="flex-1 overflow-y-auto p-4 space-y-2">
-              {example.trajectory.map((turn) => (
-                <div key={turn.turn_idx} className="rounded-lg border border-border bg-muted/50 p-3">
-                  <div className="flex items-center gap-2 mb-1.5">
-                    <span className="font-mono text-xs text-accent-blue font-semibold shrink-0">
-                      T{turn.turn_idx}
-                    </span>
-                    <span className="font-mono text-xs px-2 py-0.5 rounded bg-accent-blue/10 text-accent-blue truncate">
-                      {turn.action}
-                    </span>
+              {example.trajectory.map((turn) => {
+                const { tool, detail } = parseAction(turn.action);
+                return (
+                  <div key={turn.turn_idx} className="rounded-lg border border-border bg-muted/50 p-3">
+                    <div className="flex items-center gap-2 mb-1.5">
+                      <span className="font-mono text-xs text-accent-blue font-semibold shrink-0">
+                        T{turn.turn_idx}
+                      </span>
+                      <span className="font-mono text-xs px-2 py-0.5 rounded bg-accent-blue/10 text-accent-blue shrink-0">
+                        {tool}
+                      </span>
+                    </div>
+                    {detail && (
+                      <div className="text-xs text-foreground/70 font-mono leading-relaxed whitespace-pre-wrap break-words mb-1.5">
+                        <TruncatedText text={detail} />
+                      </div>
+                    )}
+                    {turn.observation && (
+                      <p className="text-xs text-muted-foreground font-mono leading-relaxed whitespace-pre-wrap break-words">
+                        <TruncatedText text={turn.observation} />
+                      </p>
+                    )}
                   </div>
-                  <p className="text-xs text-muted-foreground font-mono leading-relaxed whitespace-pre-wrap break-words">
-                    {turn.observation}
-                  </p>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
 

@@ -15,6 +15,11 @@ import catSpider from "@/assets/cat-spider.jpg";
 import datasetDistImg from "@/assets/figures/domain_distribution.png";
 
 import alfworldData from "@/assets/data/task_alfworld_1.json";
+import spiderData from "@/assets/data/task_spider2-snow_sf002.json";
+import swebenchData from "@/assets/data/task_swebench_astropy__astropy-14598.json";
+import webarenaData from "@/assets/data/task_webarena_1.json";
+import gaiaData from "@/assets/data/task_gaia_level1_0383a3ee-47a7-41a4-b493-519bdefe0488.json";
+import balrogData from "@/assets/data/balrog_babaisai_20251212_gpt5.1_make_win-distr_obj_rule_run_00_fail_specific_subtypes_hard.json";
 
 const imageMap: Record<string, string> = {
   "cat-spider": catSpider,
@@ -25,35 +30,42 @@ const imageMap: Record<string, string> = {
   "cat-swebench": catSwebench,
 };
 
-const placeholderTrajectory = (domain: string): TrajectoryExample => ({
-  episode_id: "coming_soon",
-  task: `Example ${domain} task — coming soon.`,
-  domain,
-  num_turns: 0,
-  total_tokens: 0,
-  state: "placeholder",
-  trajectory: [
-    { turn_idx: 0, action: "—", observation: "Example trajectory for this domain will be added soon." },
-  ],
-  qa_pairs: [],
-});
+// Normalize the varying JSON structures into a unified TrajectoryExample
+function normalize(raw: any, domain: string): TrajectoryExample {
+  const trajectory = (raw.trajectory || []).map((t: any) => ({
+    turn_idx: t.turn_idx ?? 0,
+    action: t.action || t.action_name || "—",
+    observation: t.observation || t.reasoning || "",
+  }));
+
+  const qaPairs = (raw.qa_pairs || []).map((q: any) => ({
+    question: q.question,
+    answer: q.answer,
+    type: q.type || "",
+    sub_type: q.sub_type || q.subtype || "",
+  }));
+
+  const state = raw.state || (raw.success === true ? "success" : "fail");
+
+  return {
+    episode_id: raw.episode_id || raw.source_trajectory?.split("/").pop()?.replace(".json", "") || "example",
+    task: raw.task || "See trajectory below.",
+    domain,
+    num_turns: raw.num_turns || trajectory.length,
+    total_tokens: raw.total_tokens || 0,
+    state,
+    trajectory,
+    qa_pairs: qaPairs,
+  };
+}
 
 const exampleMap: Record<string, TrajectoryExample> = {
-  "Embodied AI": {
-    episode_id: alfworldData.episode_id,
-    task: alfworldData.task,
-    domain: "Embodied AI",
-    num_turns: alfworldData.num_turns,
-    total_tokens: alfworldData.total_tokens,
-    state: alfworldData.state,
-    trajectory: alfworldData.trajectory,
-    qa_pairs: alfworldData.qa_pairs,
-  },
-  "Text 2 SQL": placeholderTrajectory("Text 2 SQL"),
-  "Open World Tool QA": placeholderTrajectory("Open World Tool QA"),
-  "Web Task Execution": placeholderTrajectory("Web Task Execution"),
-  "Gaming": placeholderTrajectory("Gaming"),
-  "Software Engineering": placeholderTrajectory("Software Engineering"),
+  "Embodied AI": normalize(alfworldData, "Embodied AI"),
+  "Text 2 SQL": normalize(spiderData, "Text 2 SQL"),
+  "Software Engineering": normalize(swebenchData, "Software Engineering"),
+  "Web Task Execution": normalize(webarenaData, "Web Task Execution"),
+  "Open World Tool QA": normalize(gaiaData, "Open World Tool QA"),
+  "Gaming": normalize(balrogData, "Gaming"),
 };
 
 const BenchmarkDomains = () => {
@@ -80,10 +92,6 @@ const BenchmarkDomains = () => {
         <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-2">
           Benchmark Domains
         </h2>
-        <p className="text-sm text-muted-foreground mb-10">
-          Click on any domain card below to view an example trajectory with QA pairs.
-        </p>
-
         {/* Top: sunburst + stats */}
         <div
           className={cn(
