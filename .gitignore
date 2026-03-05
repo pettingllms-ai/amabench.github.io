@@ -13,7 +13,7 @@ dist-ssr
 *.local
 
 # Raw benchmark source data (only needed locally to regenerate)
-data/
+/data/
 
 # Editor directories and files
 .vscode/*
