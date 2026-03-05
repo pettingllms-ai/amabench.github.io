@@ -1,4 +1,5 @@
-import { FileText, Github, Trophy, Database } from "lucide-react";
+import { FileText, Github, Trophy, Database, LayoutGrid } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const HuggingFaceIcon = () => (
   <img
@@ -49,6 +50,13 @@ const HeroBanner = () => {
 
         {/* Link Tabs */}
         <div className="flex items-center justify-center gap-3 flex-wrap">
+          <Link
+            to="/gallery"
+            className="flex items-center gap-2 px-5 py-2 rounded-full border border-accent-blue bg-accent-blue text-white transition-colors text-sm font-medium shadow-sm hover:bg-accent-blue/90"
+          >
+            <LayoutGrid size={15} />
+            <span>Task Gallery</span>
+          </Link>
           {links.map((link) => (
             <a
               key={link.label}

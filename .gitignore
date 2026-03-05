@@ -12,6 +12,11 @@ dist
 dist-ssr
 *.local
 
+# Raw benchmark data (processed at build time)
+data/
+public/tasks/
+public/gallery-tasks.json
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

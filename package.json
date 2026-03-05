@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "prebuild": "node scripts/build-gallery-data.js",
     "build": "vite build",
     "build:dev": "vite build --mode development",
     "lint": "eslint .",
