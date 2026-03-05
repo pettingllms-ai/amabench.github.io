@@ -7,7 +7,7 @@
  * Run:  node scripts/build-gallery-data.js
  */
 
-import { readFileSync, writeFileSync, mkdirSync } from "fs";
+import { readFileSync, writeFileSync, mkdirSync, existsSync } from "fs";
 import { resolve, dirname } from "path";
 import { fileURLToPath } from "url";
 
@@ -17,6 +17,17 @@ const ROOT = resolve(__dirname, "..");
 const INPUT = resolve(ROOT, "data/open_end_qa_set.jsonl");
 const OUTPUT_INDEX = resolve(ROOT, "public/gallery-tasks.json");
 const OUTPUT_DIR = resolve(ROOT, "public/tasks");
+
+// If the source JSONL is not present (e.g. in CI), skip.
+// The pre-built output files are committed to git.
+if (!existsSync(INPUT)) {
+  if (existsSync(OUTPUT_INDEX)) {
+    console.log("Skipping gallery build — source JSONL not found, using committed output files.");
+    process.exit(0);
+  }
+  console.error(`Error: ${INPUT} not found and no pre-built output exists.`);
+  process.exit(1);
+}
 
 // Map raw domain names to display names
 const DOMAIN_DISPLAY = {

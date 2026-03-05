@@ -12,10 +12,8 @@ dist
 dist-ssr
 *.local
 
-# Raw benchmark data (processed at build time)
+# Raw benchmark source data (only needed locally to regenerate)
 data/
-public/tasks/
-public/gallery-tasks.json
 
 # Editor directories and files
 .vscode/*
